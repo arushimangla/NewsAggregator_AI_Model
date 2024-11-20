@@ -13,15 +13,15 @@ Ensure you have the following installed:
 
 Step 1: Clone the Repository
 
-git clone https://github.com/arushimangla/NewsAggregator_AI_Model.git
+```git clone https://github.com/arushimangla/NewsAggregator_AI_Model.git```
 
-cd NewsAggregator_AI_Model
+```cd NewsAggregator_AI_Model```
 
 Step 2: Install Dependencies
 
-pip install -r requirements.txt
+```pip install -r requirements.txt```
 
 Step 3: Run the application
 
-flask run --host=0.0.0.0 --port=8000
+```flask run --host=0.0.0.0 --port=8000```
 
