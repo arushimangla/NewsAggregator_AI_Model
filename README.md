@@ -6,11 +6,6 @@ Project Setup:
 
 Prerequisites
 
-Ensure you have the following installed:
-
-1. Python 3.8 or higher
-2. Git
-
 Step 1: Clone the Repository
 
 ```git clone https://github.com/arushimangla/NewsAggregator_AI_Model.git```
