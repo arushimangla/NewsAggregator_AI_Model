@@ -14,12 +14,16 @@ text_model_id = "anthropic.claude-v2"
 image_model_id = "stability.stable-diffusion-xl-v1"
 
 # Utility Functions
-def generate_headline_and_sentiment(news_article):
+def generate_summary_and_sentiment(news_article):
     instruction = """I am going to provide you with the topic or a brief description of a news article. Your task is to:
 
-    1. Summary Generation: Write a concise, clear, and accurate summary of the article in EXACTLY 8-9 lines. The summary should include key points, cover the main aspects of the topic, and provide essential details. Maintain a neutral tone and avoid overly technical or verbose language. Ensure the summary is easy to understand and captures the essence of the article.
+    1. Summary Generation: Write a concise, clear, and accurate summary of the article in EXACTLYgit add  8-9 lines. The summary should include key points, cover the main aspects of the topic, and provide essential details. Maintain a neutral tone and avoid overly technical or verbose language. Ensure the summary is easy to understand and captures the essence of the article.
 
-    2. Sentiment Analysis (Optional): Analyze the overall sentiment of the topic (if relevant) and classify it as positive, negative, or neutral. Provide a brief explanation for your sentiment classification.
+    2. Sentiment Analysis: Analyze the overall sentiment of the topic and classify it as positive, negative, or neutral. Provide a brief explanation for your sentiment classification.
+
+    The output format should be:
+    Summary:
+    Sentiment: (Positive, Negative or Neutral)
 
     Here is the topic or description:"""
 
@@ -43,8 +47,8 @@ def generate_headline_and_sentiment(news_article):
     return response_body.get("completion")
 
 
-def generate_image(headline):
-    prompt = f"Create a cinematic, high-resolution 4K HDR image that visually represents the following headline: '{headline}'. It should convey the tone and theme of the headline."
+def generate_image(title):
+    prompt = f"Create a cinematic, high-resolution 4K HDR image that visually represents the following description: '{title}'. It should convey the tone and theme of the description."
 
     seed = random.randint(0, 4294967295)
 
@@ -94,25 +98,31 @@ def generate_content():
     news_article = data['news_article']
 
     try:
-        text_response = generate_headline_and_sentiment(news_article)
+        text_response = generate_summary_and_sentiment(news_article)
     except Exception as e:
         return jsonify({"error": f"Text generation failed: {str(e)}"}), 500
 
-    if "Headline:" in text_response:
-        headline_start = text_response.find("Headline:") + len("Headline:")
-        headline_end = text_response.find("\n", headline_start)
-        headline = text_response[headline_start:headline_end].strip()
+    if "Summary:" in text_response:
+        summary_start = text_response.find("Summary:") + len("Summary:")
+        summary_end = text_response.find("Sentiment:")  # Assuming sentiment starts after the summary
+        summary = text_response[summary_start:summary_end].strip()
     else:
-        headline = "Headline not found in response."
+        summary = "Summary not found in response."
+
+    if "Sentiment:" in text_response:
+        sentiment_start = text_response.find("Sentiment:") + len("Sentiment:")
+        sentiment = text_response[sentiment_start:].strip()
+    else:
+        sentiment = "Sentiment not found in response."
 
     try:
-        image_path = generate_image(headline)
+        image_path = generate_image(summary)
     except Exception as e:
         return jsonify({"error": f"Image generation failed: {str(e)}"}), 500
 
     return jsonify({
-        "headline": headline,
-        "sentiment_analysis": text_response,
+        "summary": summary,
+        "sentiment": sentiment,
         "image_path": image_path
     })
 

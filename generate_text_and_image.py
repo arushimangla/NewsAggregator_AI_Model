@@ -10,14 +10,18 @@ text_model_id = "anthropic.claude-v2"
 image_model_id = "stability.stable-diffusion-xl-v1"
 
 # Step 1: Generate Headline and Sentiment
-def generate_headline_and_sentiment(news_article):
-    instruction = """I am going to provide you with the full text of a news article. Your task is twofold:
-    
-    1. Headline Generation: Create a concise, engaging, and accurate headline that captures the main idea or essence of the article. The headline should be no more than 10-12 words and should be suitable for a general audience. If the article has a tone, such as informative, inspiring, or urgent, try to reflect that in the headline as well.
-    
-    2. Sentiment Analysis: Analyze the overall sentiment of the article and classify it as either positive, negative, or neutral. Additionally, provide a brief explanation for your sentiment classification.
+def generate_summary_and_sentiment(news_article):
+    instruction = """I am going to provide you with the topic or a brief description of a news article. Your task is to:
 
-    Here is the article:"""
+    1. Summary Generation: Write a concise, clear, and accurate summary of the article in EXACTLYgit add  8-9 lines. The summary should include key points, cover the main aspects of the topic, and provide essential details. Maintain a neutral tone and avoid overly technical or verbose language. Ensure the summary is easy to understand and captures the essence of the article.
+
+    2. Sentiment Analysis: Analyze the overall sentiment of the topic and classify it as positive, negative, or neutral. Provide a brief explanation for your sentiment classification.
+
+    The output format should be:
+    Summary:
+    Sentiment: (Positive, Negative or Neutral)
+
+    Here is the topic or description:"""
 
     prompt_data = f"{instruction} {news_article}"
 
@@ -39,8 +43,8 @@ def generate_headline_and_sentiment(news_article):
     return response_body.get("completion")
 
 # Step 2: Generate Image
-def generate_image(headline):
-    prompt = f"Create a cinematic, high-resolution 4K HDR image that visually represents the following headline: '{headline}'. It should convey the tone and theme of the headline."
+def generate_image(title):
+    prompt = f"Create a cinematic, high-resolution 4K HDR image that visually represents the following description: '{title}'. It should convey the tone and theme of the description."
 
     seed = random.randint(0, 4294967295)
 
@@ -77,16 +81,26 @@ def generate_image(headline):
 if __name__ == "__main__":
     news_article = input("Enter the full text of the news article: ")
 
-    print("\nGenerating headline and sentiment...")
-    text_response = generate_headline_and_sentiment(news_article)
+    print("\nGenerating summary and sentiment...")
+    text_response = generate_summary_and_sentiment(news_article)
     print("\nText Response:\n", text_response)
 
-    if "Headline:" in text_response:
-        headline_start = text_response.find("Headline:") + len("Headline:")
-        headline_end = text_response.find("\n", headline_start)
-        headline = text_response[headline_start:headline_end].strip()
+    if "Summary:" in text_response:
+        summary_start = text_response.find("Summary:") + len("Summary:")
+        summary_end = text_response.find("Sentiment:")  # Assuming sentiment starts after the summary
+        summary = text_response[summary_start:summary_end].strip()
     else:
-        headline = "Headline not found in response."
+        summary = "Summary not found in response."
+
+    if "Sentiment:" in text_response:
+        sentiment_start = text_response.find("Sentiment:") + len("Sentiment:")
+        sentiment = text_response[sentiment_start:].strip()
+    else:
+        sentiment = "Sentiment not found in response."
+
+    print("\nGenerated Summary:\n", summary)
+    print("\nSentiment:\n", sentiment)
+
     print("\nGenerating image...")
-    image_path = generate_image(headline)
+    image_path = generate_image(summary)
     print(f"\nImage saved at: {image_path}")
