@@ -17,7 +17,7 @@ image_model_id = "stability.stable-diffusion-xl-v1"
 def generate_headline_and_sentiment(news_article):
     instruction = """I am going to provide you with the topic or a brief description of a news article. Your task is to:
 
-    1. Summary Generation: Write a concise, clear, and accurate summary of the article in exactly 8-9 lines. The summary should include key points, cover the main aspects of the topic, and provide essential details. Maintain a neutral tone and avoid overly technical or verbose language. Ensure the summary is easy to understand and captures the essence of the article.
+    1. Summary Generation: Write a concise, clear, and accurate summary of the article in EXACTLY 8-9 lines. The summary should include key points, cover the main aspects of the topic, and provide essential details. Maintain a neutral tone and avoid overly technical or verbose language. Ensure the summary is easy to understand and captures the essence of the article.
 
     2. Sentiment Analysis (Optional): Analyze the overall sentiment of the topic (if relevant) and classify it as positive, negative, or neutral. Provide a brief explanation for your sentiment classification.
 
