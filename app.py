@@ -11,7 +11,7 @@ bedrock_client = boto3.client("bedrock-runtime", region_name="us-west-2")
 
 # Models
 text_model_id = "anthropic.claude-v2"
-image_model_id = "stability.stable-diffusion-xl-v1"
+# image_model_id = "stability.stable-diffusion-xl-v1"
 
 # Utility Functions
 def generate_summary_and_sentiment(news_article):
@@ -47,40 +47,40 @@ def generate_summary_and_sentiment(news_article):
     return response_body.get("completion")
 
 
-def generate_image(title):
-    prompt = f"Create a cinematic, high-resolution 4K HDR image that visually represents the following description: '{title}'. It should convey the tone and theme of the description."
+# def generate_image(title):
+#     prompt = f"Create a cinematic, high-resolution 4K HDR image that visually represents the following description: '{title}'. It should convey the tone and theme of the description."
 
-    seed = random.randint(0, 4294967295)
+#     seed = random.randint(0, 4294967295)
 
-    native_request = {
-        "text_prompts": [{"text": prompt}],
-        "style_preset": "photographic",
-        "seed": seed,
-        "cfg_scale": 10,
-        "steps": 30,
-    }
+#     native_request = {
+#         "text_prompts": [{"text": prompt}],
+#         "style_preset": "photographic",
+#         "seed": seed,
+#         "cfg_scale": 10,
+#         "steps": 30,
+#     }
 
-    response = bedrock_client.invoke_model(
-        body=json.dumps(native_request),
-        modelId=image_model_id,
-        accept="application/json",
-        contentType="application/json",
-    )
+#     response = bedrock_client.invoke_model(
+#         body=json.dumps(native_request),
+#         modelId=image_model_id,
+#         accept="application/json",
+#         contentType="application/json",
+#     )
 
-    model_response = json.loads(response["body"].read())
-    base64_image_data = model_response["artifacts"][0]["base64"]
+#     model_response = json.loads(response["body"].read())
+#     base64_image_data = model_response["artifacts"][0]["base64"]
 
-    i, output_dir = 1, "output"
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    while os.path.exists(os.path.join(output_dir, f"generated_image_{i}.png")):
-        i += 1
+#     i, output_dir = 1, "output"
+#     if not os.path.exists(output_dir):
+#         os.makedirs(output_dir)
+#     while os.path.exists(os.path.join(output_dir, f"generated_image_{i}.png")):
+#         i += 1
 
-    image_path = os.path.join(output_dir, f"generated_image_{i}.png")
-    with open(image_path, "wb") as file:
-        file.write(base64.b64decode(base64_image_data))
+#     image_path = os.path.join(output_dir, f"generated_image_{i}.png")
+#     with open(image_path, "wb") as file:
+#         file.write(base64.b64decode(base64_image_data))
 
-    return image_path
+#     return image_path
 
 
 # API Endpoints
@@ -115,15 +115,15 @@ def generate_content():
     else:
         sentiment = "Sentiment not found in response."
 
-    try:
-        image_path = generate_image(summary)
-    except Exception as e:
-        return jsonify({"error": f"Image generation failed: {str(e)}"}), 500
+    # try:
+    #     image_path = generate_image(summary)
+    # except Exception as e:
+    #     return jsonify({"error": f"Image generation failed: {str(e)}"}), 500
 
     return jsonify({
         "summary": summary,
-        "sentiment": sentiment,
-        "image_path": image_path
+        "sentiment": sentiment
+        # "image_path": image_path
     })
 
 
